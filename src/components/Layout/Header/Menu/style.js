@@ -9,18 +9,18 @@ export const MenuItem = styled.div`
     margin: auto 0;
     padding: 0 16px;
     line-height: 60px;
-    a(
+    a {
         color: white;
         &:hover{
             color: #999;
         }
-
-    )
+        text-decoration: none;
+    }
 `
 
 export const SubMenuItemWrapper = styled.div`
         position: relative;
-        text-decoration: underline;
+        text-decoration: none;
         cursor: pointer;
         &:hover{
             >div:last-child{
