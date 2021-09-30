@@ -1,32 +1,48 @@
-import React from 'react';
-import { graphql, useStaticQuery, Link } from 'gatsby';
-import { SocialMediaMenuWrapper, SocialMediaLink } from './style';
+import React from "react";
+import { graphql, useStaticQuery, Link } from "gatsby";
+import { SocialMediaMenuWrapper, SocialMediaLink, ImageWrapper } from "./style";
+import { GatsbyImage } from "gatsby-plugin-image";
 
 const SocialMediaMenu = () => {
   const result = useStaticQuery(graphql`
-query SocialMediaMenuQuery {
-  contentfulSocialMediaMenu {
-    id
-    socialMediaLink {
+    fragment socialMediaLinkData on ContentfulSocialMediaLink {
       id
       name
       socialMediaUrl
-      logoFileName
+      socialMediaLogo {
+        title
+        gatsbyImageData(width: 32, placeholder: BLURRED)
+      }
     }
-  }
-}  `)    
 
-    return (
-              <SocialMediaMenuWrapper>
-              {result.contentfulSocialMediaMenu.socialMediaLink.map((socialMediaLink) => (
-                <SocialMediaLink key={socialMediaLink.id}>
-                  <Link to={`${socialMediaLink.socialMediaUrl}`}>
-                      {socialMediaLink.name}
-                  </Link>
-                </SocialMediaLink>
-              ))}
-            </SocialMediaMenuWrapper>
-    )
-}
+    query SocialMediaMenuQuery {
+      contentfulSocialMediaMenu {
+        socialMediaLink {
+          ...socialMediaLinkData
+        }
+      }
+    }
+  `);
+
+  return (
+    <SocialMediaMenuWrapper>
+      {/* {console.log(result)} */}
+      {result.contentfulSocialMediaMenu.socialMediaLink.map(
+        (socialMediaMenuItem) => (
+          <SocialMediaLink key={socialMediaMenuItem.id}>
+            <Link to={`${socialMediaMenuItem.socialMediaUrl}`} target="blank">
+              <ImageWrapper>
+                <GatsbyImage
+                  alt={socialMediaMenuItem.socialMediaLogo.title}
+                  image={socialMediaMenuItem.socialMediaLogo.gatsbyImageData}
+                />
+              </ImageWrapper>
+            </Link>
+          </SocialMediaLink>
+        )
+      )}
+    </SocialMediaMenuWrapper>
+  );
+};
 
 export default SocialMediaMenu;
